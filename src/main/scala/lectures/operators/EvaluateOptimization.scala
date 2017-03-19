@@ -42,7 +42,7 @@ object EvaluateOptimization extends App with Data {
 
   // ВЫПОЛНИТЬ В ЦИКЛЕ ОТ 1 ДО 100 FunctionalComputation.filterApplied
   for (i <- 1 to 100) {
-    FunctionalComputation.filterApplied
+    FunctionalComputation.filterApplied(dataArray)
   }
 
   val filterAppliedDuration = System.currentTimeMillis() - filterAppliedStartTimestamp

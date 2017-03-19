@@ -92,7 +92,7 @@ object SortingStuff extends App {
   }
 
   //вместо вопросов подставьте композицию функций  sortJunk и findMyKnife
-  //val knifeIsInJunk = findMyKnife(stuff).compose(sortJunk[StuffBox])
+  //val knifeIsInJunk = (findMyKnife[StuffBox] compose sortJunk)(StuffBox)
   val knifeIsInJunk = findMyKnife(sortJunk(stuff))
   print(s"Is knife in a junk? - $knifeIsInJunk")
 }
