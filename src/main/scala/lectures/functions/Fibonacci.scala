@@ -1,5 +1,6 @@
 package lectures.functions
 
+import scala.collection.mutable.ArrayBuffer
 /**
   * Цель упражнения: вычислить 9 - е число Фибоначчи
   * Для этого раскомментируйте строчку в методе fibs и исправьте ошибку компиляции.
@@ -12,10 +13,10 @@ package lectures.functions
 object Fibonacci extends App {
 
   // Task 2
-  def fibs(num: Int) = {
+  def fibs(num: Int): Int = {
     if (num == 1) 1
     if (num == 2) 1
-    //fibs(num - 1) + fibs(num - 2)
+    else fibs(num - 1) + fibs(num - 2)
   }
 
   println(fibs(9))
@@ -23,25 +24,29 @@ object Fibonacci extends App {
 }
 
 /**
-  * Цель упражнения: используя приемы динамического программирования,
-  * реализовать более оптимальный алгоритм подсчета чисел фибоначчи
+  * Цель упражнения, используя приемы динамического программирования
+  * реаилзовать более оптимальный алгоритм подсчета чисел фибоначчи
   * Для этого нужно реализовать функцию fibsImpl.
   * Сигнатуру функции Вы можете расширять по своему усмотрению,
-  * но реализация должна удовлетворять следующим требованиям
+  * но реализация должна удовлетварять следующим требованиям
   * * * * метод fibsImpl - должен быть tail recursive
   * * * * параметр acc - аккумулятор посчитанных значений
   *
   */
+
 object Fibonacci2 extends App {
 
   def fibs2(num: Int) =
-    if (num <= 3) Array(1, 1, 2)(num - 1)
-    else fibsImpl(num, Array(1, 1, 2))(num - 1)
+    if (num <= 3) ArrayBuffer(1, 1, 2)(num - 1)
+    else fibsImpl(num, ArrayBuffer(1, 1, 2))(num - 1)
 
-  private def fibsImpl(num: Int, acc: Array[Int]): Array[Int] = ???
+  private def fibsImpl(num: Int, acc: ArrayBuffer[Int]): ArrayBuffer[Int] = {
+    if (num > acc.length) fibsImpl(num - 1, acc)
+    acc += acc(num - 1) + acc(num - 2)
+  }
 
-  println(fibs2(16))
-  //println(fibs(1000))
+   println(fibs2(40))
+  //println(fibs2(1000))
 }
 
 
