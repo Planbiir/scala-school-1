@@ -70,24 +70,26 @@ object SortingStuff extends App {
                       junk: List[Stuff] = Nil)
 
   def sortJunk(stuff: List[Stuff]): StuffBox = sort(stuff, StuffBox())
+
   // // Замените знаки вопроса подходящим кодом
   // // Поправьте логику метода
   def sort(stuff: List[Stuff], stuffBox: StuffBox): StuffBox = stuff match {
-    case item::rest =>
+    case item :: rest =>
       val newBox = putStuffInRightBox(item, stuffBox)
       sort(rest, newBox)
     case _ => stuffBox
   }
+
   // Метод должен положить вещь в правильную коробку
   private def putStuffInRightBox(item: Stuff, stuffBox: StuffBox) = item match {
-    case it@Watches(_,price) if price>1000 => stuffBox.copy(watches = it :: stuffBox.watches)
+    case it@Watches(_, price) if price > 1000 => stuffBox.copy(watches = it :: stuffBox.watches)
+    case it@Boots(brand, _) if brand == "Converse" || brand == "Adidas" => stuffBox.copy(boots = it :: stuffBox.boots)
+    case it@Book(_, isInteresting) if isInteresting == true => stuffBox.copy(books = it :: stuffBox.books)
     case junk@_ => stuffBox.copy(junk = junk :: stuffBox.junk)
-    case it@Boots(brand,_) if brand == "Converse" || brand == "Adidas" => stuffBox.copy(boots = it :: stuffBox.boots)
-    case it@Book(_,isInteresting) if isInteresting == true => stuffBox.copy(books = it :: stuffBox.books)
   }
 
   def findMyKnife(stuffBox: StuffBox): Boolean = stuffBox match {
-    case StuffBox(_,_,_,junk) if junk.contains(Knife) => true
+    case StuffBox(_, _, _, junk) if junk.contains(Knife) => true
     case _ => false
   }
 
