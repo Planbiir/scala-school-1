@@ -16,7 +16,7 @@ trait Data {
 object Computation extends App with Data {
 
   def computation(filterData: String, dataProducer: Array[String]): Array[String] = {
-    //EMULATE HEAVY LOAD
+    //EMULATE HEAVY LOAD//
     Thread.sleep(10)
     //PRODUCE WORDS ARRAY FROM A STRING
     val filterArray = filterData.split(" ")
@@ -41,12 +41,17 @@ object Computation extends App with Data {
   */
 object CurriedComputation extends App with Data {
 
-  def curriedComputation(filterData: String)(dataProducer: Array[String]): Array[String] = ???
+  def curriedComputation(filterData: String)(dataProducer: Array[String]): Array[String] = {
+    Thread.sleep(10)
+    val filterArray = filterData.split(" ")
+    Thread.sleep(100)
+    dataProducer.filter(dataItem => filterArray.contains(dataItem))
+  }
 
-  val partiallyAppliedCurriedFunction = ???
+  val partiallyAppliedCurriedFunction = curriedComputation(filterData) _
 
-  //val result = partiallyAppliedCurriedFunction(dataArray)
-  //result.foreach(println)
+  val result = partiallyAppliedCurriedFunction(dataArray)
+  result.foreach(println)
 }
 
 /**
@@ -56,10 +61,16 @@ object CurriedComputation extends App with Data {
   */
 object FunctionalComputation extends App with Data {
 
-  def functionalComputation(filterData: String): (Array[String]) => Array[String] = ???
+  def functionalComputation(filterData: String): (Array[String]) => Array[String] = {
+    Thread.sleep(10)
+    dataProducer => {
+      Thread.sleep(100)
+      dataProducer.filter(dataItem => filterData.split(" ").contains(dataItem))
+    }
+  }
+  val filterApplied = functionalComputation(filterData)
 
-  val filterApplied = functionalComputation(???)
+  val result = filterApplied(dataArray)
 
-  val result = filterApplied(???)
   result.foreach(println)
 }
