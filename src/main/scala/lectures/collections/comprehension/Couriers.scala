@@ -1,5 +1,7 @@
 package lectures.collections.comprehension
 
+import scala.collection.JavaConverters._
+
 /**
   * Помогите курьерам разобраться с обслуживанием адресов
   *
@@ -13,8 +15,8 @@ package lectures.collections.comprehension
   * Во второй - количество курьеров, вышедших на работу.
   *
   * Ваша задача:
-  *  Изучить код и переписать его так,
-  *  что бы в нем не было ни одного цикла for, ни одной переменной или мутабильной коллекции
+  * Изучить код и переписать его так,
+  * что бы в нем не было ни одного цикла for, ни одной переменной или мутабильной коллекции
   *
   * Для этого используйте функции комбинаторы: filter, filterWith, fold, map, flatMap и т.д.
   *
@@ -24,9 +26,7 @@ case class Traffic(degree: Double)
 
 object Courier {
   def couriers(courierCount: Int): List[Courier] =
-    (for (i <- 1 to courierCount) yield {
-      Courier(i)
-    }).toList
+    (1 to courierCount).map(i => Courier(i)).toList
 }
 
 case class Courier(index: Int) {
@@ -52,16 +52,8 @@ object CouriersWithComprehension extends App {
   val cours = couriers(courierCount)
 
   // какие адреса были обслужены
-  def serveAddresses(addresses: List[Address], couriers: List[Courier]): List[Address] = {
-    var accum = 0
-    for (courier <- couriers;
-         trafficDegree = traffic().degree;
-         t <- 0 to courier.canServe if trafficDegree < 5 && accum < addresses.length
-    ) yield {
-      val addr = addresses(accum)
-      accum = accum + 1
-      addr
-    }
+  def serveAddresses(addresses: List[Address], couriers: List[Courier]) = {
+    couriers.flatMap(courier => (0 to courier.canServe).withFilter(t => traffic().degree < 5 && accum < addresses.length).map(t => addresses(accum))) // не знаю как сюда foldleft прикрутить
   }
 
   def traffic(): Traffic = new Traffic(Math.random() * 10)
@@ -71,4 +63,7 @@ object CouriersWithComprehension extends App {
 
   printServedAddresses(addrs, cours)
 
+}
+
+)
 }
