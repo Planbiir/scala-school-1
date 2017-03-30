@@ -39,16 +39,16 @@ case class BSTImpl(value: Int,
                    left: Option[BSTImpl] = None,
                    right: Option[BSTImpl] = None) extends BST {
 
-  def add(newValue: Int): BST = this match {
-    case BSTImpl(this.value, _, _) => this
+  def add(newValue: Int): BSTImpl = this match {
+    case BSTImpl(`newValue`, _, _) => this
     case BSTImpl(x, None, _) if x < newValue => copy(left = Some(BSTImpl(newValue, None, None)))
     case BSTImpl(x, _, None) if x > newValue => copy(right = Some(BSTImpl(newValue, None, None)))
-    case BSTImpl(x, Some(l), _) if x < newValue => l.add(newValue)
-    case BSTImpl(x, _, Some(r)) if x > newValue => r.add(newValue)
+    case BSTImpl(x, Some(l), _) if x < newValue => copy(left = Some(l.add(newValue)))
+    case BSTImpl(x, _, Some(r)) if x > newValue => copy(right = Some(r.add(newValue)))
   }
 
   def find(value: Int): Option[BST] = value match {
-    case this.value => Some(this)
+    case `value` => Some(this)
     case x if x < value => left.flatMap(_.find(x))
     case x if x > value => right.flatMap(_.find(x))
   }
