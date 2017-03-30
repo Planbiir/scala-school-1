@@ -53,17 +53,13 @@ object CouriersWithComprehension extends App {
 
   // какие адреса были обслужены
   def serveAddresses(addresses: List[Address], couriers: List[Courier]) = {
-    couriers.flatMap(courier => (0 to courier.canServe).withFilter(t => traffic().degree < 5 && accum < addresses.length).map(t => addresses(accum))) // не знаю как сюда foldleft прикрутить
+   addresses take math.min(couriers.filter(_ => traffic().degree < 5).map(_.canServe).sum, addresses.length)
   }
-
   def traffic(): Traffic = new Traffic(Math.random() * 10)
 
   def printServedAddresses(addresses: List[Address], couriers: List[Courier]) =
-    serveAddresses(addresses, couriers).foreach(a => println(a.postIndex))
+    serveAddresses(addresses, couriers).foreach(x => println(x))
 
   printServedAddresses(addrs, cours)
 
-}
-
-)
 }
