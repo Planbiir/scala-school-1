@@ -30,17 +30,30 @@ trait BST {
   def add(newValue: Int): BST
 
   def find(value: Int): Option[BST]
+
+  def toString(tree: BST): Unit
+
 }
 
 case class BSTImpl(value: Int,
                    left: Option[BSTImpl] = None,
                    right: Option[BSTImpl] = None) extends BST {
 
-  def add(newValue: Int): BST = ???
+  def add(newValue: Int): BSTImpl = this match {
+    case BSTImpl(`newValue`, _, _) => this
+    case BSTImpl(x, None, _) if x < newValue => copy(left = Some(BSTImpl(newValue, None, None)))
+    case BSTImpl(x, _, None) if x > newValue => copy(right = Some(BSTImpl(newValue, None, None)))
+    case BSTImpl(x, Some(l), _) if x < newValue => copy(left = Some(l.add(newValue)))
+    case BSTImpl(x, _, Some(r)) if x > newValue => copy(right = Some(r.add(newValue)))
+  }
 
-  def find(value: Int): Option[BST] = ???
+  def find(value: Int): Option[BST] = value match {
+    case `value` => Some(this)
+    case x if x < value => left.flatMap(_.find(x))
+    case x if x > value => right.flatMap(_.find(x))
+  }
 
-  // override def toString() = ???
+    override def toString(tree: BST) = ???
 
 }
 
@@ -48,7 +61,7 @@ object TreeTest extends App {
 
   val sc = new java.util.Scanner(System.in)
   val maxValue = 110000
-  val nodesCount = sc.nextInt()
+  val nodesCount: Int = sc.nextInt()
 
   val markerItem = (Math.random() * maxValue).toInt
   val markerItem2 = (Math.random() * maxValue).toInt
@@ -56,15 +69,14 @@ object TreeTest extends App {
 
   // Generate huge tree
   val root: BST = BSTImpl(maxValue / 2)
-  val tree: BST = ??? // generator goes here
-
+  val tree: BST = (1 to nodesCount).foldLeft(root)((x, _) => x.add((Math.random() * maxValue).toInt))
   // add marker items
   val testTree = tree.add(markerItem).add(markerItem2).add(markerItem3)
 
   // check that search is correct
   require(testTree.find(markerItem).isDefined)
-  require(testTree.find(markerItem).isDefined)
-  require(testTree.find(markerItem).isDefined)
+  require(testTree.find(markerItem2).isDefined)
+  require(testTree.find(markerItem3).isDefined)
 
   println(testTree)
 }

@@ -1,5 +1,7 @@
 package lectures.collections.comprehension
 
+import scala.collection.JavaConverters._
+
 /**
   * Помогите курьерам разобраться с обслуживанием адресов
   *
@@ -13,8 +15,8 @@ package lectures.collections.comprehension
   * Во второй - количество курьеров, вышедших на работу.
   *
   * Ваша задача:
-  *  Изучить код и переписать его так,
-  *  что бы в нем не было ни одного цикла for, ни одной переменной или мутабильной коллекции
+  * Изучить код и переписать его так,
+  * что бы в нем не было ни одного цикла for, ни одной переменной или мутабильной коллекции
   *
   * Для этого используйте функции комбинаторы: filter, filterWith, fold, map, flatMap и т.д.
   *
@@ -24,9 +26,7 @@ case class Traffic(degree: Double)
 
 object Courier {
   def couriers(courierCount: Int): List[Courier] =
-    (for (i <- 1 to courierCount) yield {
-      Courier(i)
-    }).toList
+    (1 to courierCount).map(i => Courier(i)).toList
 }
 
 case class Courier(index: Int) {
@@ -35,9 +35,7 @@ case class Courier(index: Int) {
 
 object Address {
   def addresses(addressesCount: Int): List[Address] =
-    (for (i <- 1 to addressesCount) yield {
-      Address(s"$i$i$i")
-    }).toList
+    (1 to addressesCount).map(i => Address(s"$i$i$i")).toList
 }
 
 case class Address(postIndex: String)
@@ -55,23 +53,12 @@ object CouriersWithComprehension extends App {
 
   // какие адреса были обслужены
   def serveAddresses(addresses: List[Address], couriers: List[Courier]) = {
-    var accum = 0
-    for (courier <- couriers;
-         trafficDegree = traffic().degree;
-         t <- 0 to courier.canServe if trafficDegree < 5 && accum < addresses.length
-    ) yield {
-      val addr = addresses(accum)
-      accum = accum + 1
-      addr
-    }
+   addresses take math.min(couriers.filter(_ => traffic().degree < 5).map(_.canServe).sum, addresses.length)
   }
-
   def traffic(): Traffic = new Traffic(Math.random() * 10)
 
   def printServedAddresses(addresses: List[Address], couriers: List[Courier]) =
-    for (a <- serveAddresses(addresses, couriers)) {
-      println(a.postIndex)
-    }
+    serveAddresses(addresses, couriers).foreach(x => println(x))
 
   printServedAddresses(addrs, cours)
 
