@@ -12,8 +12,8 @@ import lectures.functions.SQLAPI
   * * * * уберите знаки вопроса и раскомментируйте execute(sql)
   * * * * допишите тело функций в соответсвии с комментарием в каждом методе
   * После этого допишите инициализацию usefulService в Application так, чтобы:
-  *   в тестовой среде использовался TestServiceImpl
-  *   в боевой - ProductionServiceImpl
+  * в тестовой среде использовался TestServiceImpl
+  * в боевой - ProductionServiceImpl
   *
   * Допишите тесты в ApplicationTest
   *
@@ -23,22 +23,25 @@ trait UsefulService {
 }
 
 trait TestServiceImpl extends UsefulService {
-  private val sql = "do the SQL query and then count words"
-  def doSomeService() = ??? //execute(sql) //подсчитайте количество слов в результате execute
+  this: SQLAPI =>
+  private val sql: String = "do the SQL query and then count words"
+
+  def doSomeService(): Int = execute(sql).count(_ == ' ') + 1 //подсчитайте количество слов в результате execute
 }
 
 trait ProductionServiceImpl extends UsefulService {
-  private val sql = "do the SQL query and than count 'a' sympols"
-  def doSomeService() = ??? //execute(sql) // подсчитайте сколько символов 'a' в полученной строке
+  this: SQLAPI =>
+  private val sql: String = "do the SQL query and than count 'a' sympols"
+
+  def doSomeService(): Int = execute(sql).count(_ == 'a') // подсчитайте сколько символов 'a' в полученной строке
 }
 
 class Application(isTestEnv: Boolean) {
-
-  val usefulService : UsefulService = if (isTestEnv)
-   ??? //передайте "test db Resource" в качестве ресурсв в конструктор SQLAPI
+  val usefulService: UsefulService = if (isTestEnv)
+    new SQLAPI("test db Resource") with TestServiceImpl //передайте "test db Resource" в качестве ресурсв в конструктор SQLAPI
   else
-   ??? //передайте "production Resource" в качестве ресурсв в конструктор SQLAPI
+    new SQLAPI("production Resource") with ProductionServiceImpl //передайте "production Resource" в качестве ресурсв в конструктор SQLAPI
 
-  def doTheJob() = usefulService.doSomeService()
+  def doTheJob(): Int = usefulService.doSomeService()
 
 }
