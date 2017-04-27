@@ -1,7 +1,7 @@
 package lectures.oop
 
 import lectures.functions.SQLAPI
-
+import scala.io.Codec.string2codec
 /**
   * У вас есть приложение, которое можно запустить в тестовом или продуктовом окружении.
   * В зависимости от окружения ваше приложение создает БД с тестовым или бовым адресом
@@ -26,7 +26,7 @@ trait TestServiceImpl extends UsefulService {
   this: SQLAPI =>
   private val sql: String = "do the SQL query and then count words"
 
-  def doSomeService(): Int = execute(sql).count(_ == ' ') + 1 //подсчитайте количество слов в результате execute
+  def doSomeService(): Int = execute(sql).split("[ ,!.]+").length //подсчитайте количество слов в результате execute
 }
 
 trait ProductionServiceImpl extends UsefulService {

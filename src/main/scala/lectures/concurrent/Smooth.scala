@@ -20,15 +20,17 @@ object Smooth {
 }
 
 class Smooth[T](thunk: => T) {
-  var cur = Option.empty[Future[T]]
+  @volatile var cur = Option.empty[Future[T]]
 
-  def apply(): Future[T] = this.synchronized {
-    cur match {
-      case Some(x) => x
-      case None =>
-        val f = Future(thunk).andThen { case _ => cur = None }
-        cur = Some(f)
-        f
-    }
+  def apply(): Future[T] = {
+    if (cur != Some)
+      this.synchronized {
+        if (cur != Some) {
+          val f = Future(thunk)
+          cur = Some(f)
+          f
+        }
+      }
   }
 }
+
