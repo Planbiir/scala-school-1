@@ -1,6 +1,6 @@
 package lectures.concurrent
 
-import scala.concurrent.Future
+import scala.concurrent.{Future, Promise}
 
 /**
   * Smooth - это своебразный функциональный кэш, предназначенный для исключения повторных вызовов кода
@@ -15,10 +15,22 @@ import scala.concurrent.Future
   * Подсказка: можно использовать AtomicReference
   *
   */
-object Smooth{
-  //def apply(thunk: =>): Smooth = ???
+object Smooth {
+  def apply[T](thunk: => T): Smooth[T] = new Smooth[T](thunk)
 }
 
-class Smooth {
-   def apply(): Future[_] = ???
+class Smooth[T](thunk: => T) {
+  @volatile var cur = Option.empty[Future[T]]
+
+  def apply(): Future[T] = {
+    if (cur != Some)
+      this.synchronized {
+        if (cur != Some) {
+          val f = Future(thunk)
+          cur = Some(f)
+          f
+        }
+      }
+  }
 }
+

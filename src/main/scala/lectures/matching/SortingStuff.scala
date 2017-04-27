@@ -37,6 +37,10 @@ object SortingStuff extends App {
 
   case class Boots(brand: String, size: Int = 43) extends Stuff
 
+  object Watches{
+    implicit val watchesOrdering = Ordering.by[Watches, Float](_.cost)
+  }
+
   case class Watches(brand: String, cost: Float) extends Stuff
 
   case class Book(name: String, isInteresting: Boolean = false) extends Stuff
